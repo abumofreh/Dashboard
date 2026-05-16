@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Amin Elkhayyat's Students' Results</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-box h1 {
+            color: #f5af19;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+        .login-box p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .login-box input:focus {
+            outline: none;
+            border-color: #f5af19;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .login-box button:hover { transform: translateY(-2px); }
+        .error-msg {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        /* Main Dashboard */
+        .dashboard { display: none; }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .logout-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* Quiz Selector: two lines */
+        .quiz-selector {
+            padding: 15px 30px;
+            background: #fff9f0;
+            border-bottom: 1px solid #f5af19;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .quiz-row {
+            display:flex;
+            flex-wrap:wrap;
+            gap:10px;
+            align-items:center;
+            width:100%;
+        }
+
+        /* Date Selection Banner */
+        .date-selection-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .date-selection-banner h2 { margin-bottom: 20px; font-size: 1.5em; }
+        .date-input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .date-input-group label {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .date-input-group input[type="date"] {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            min-width: 180px;
+        }
+        .date-input-group input[type="date"]:focus {
+            outline: 2px solid #f5af19;
+        }
+        .load-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .load-btn:hover { transform: translateY(-2px); }
+
+        .tabs {
+            display: flex;
+            background: #fff9f0;
+            border-bottom: 3px solid #f5af19;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: #fff9f0;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab:hover { background: #fff3dc; }
+        .tab.active {
+            background: white;
+            color: #f5af19;
+            border-bottom: 4px solid #f5af19;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #fff9f0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(245,175,25,0.2);
+            text-align: center;
+            border-top: 4px solid #f5af19;
+        }
+        .stat-card h3 {
+            color: #f5af19;
+            font-size: 2em;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .stat-card p {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .analytics-section { padding: 30px; }
+        .section-title {
+            font-size: 1.5em;
+            color: #f5af19;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #f5af19;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .question-analytics {
+            background: #fff9f0;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 5px solid #f5af19;
+        }
+        .difficulty-hard { border-left-color: #dc3545; background: #ffe6e6; }
+        .difficulty-medium { border-left-color: #ffc107; background: #fff9e6; }
+        .difficulty-easy { border-left-color: #28a745; background: #e6f7ed; }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .question-title { font-weight: bold; font-size: 1.1em; color: #333; }
+        .difficulty-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .badge-hard { background: #dc3545; color: white; }
+        .badge-medium { background: #ffc107; color: #333; }
+        .badge-easy { background: #28a745; color: white; }
+        .accuracy-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin: 10px 0;
+        }
+        .accuracy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f5af19, #f12711);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-item strong {
+            display: block;
+            color: #f5af19;
+            font-size: 1.2em;
+        }
+        .stat-item span { font-size: 0.85em; color: #666; }
+
+        .controls {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #f5af19;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .search-box { flex: 1; min-width: 250px; }
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #f5af19;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #f12711;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: transform 0.2s;
+            white-space: nowrap;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-sm { padding: 8px 15px; font-size: 0.9em; }
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        }
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        thead {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+        th:hover { background: rgba(241,39,17,0.9); }
+        tbody tr:hover { background: #fff9f0; }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .status-passed { background: #d4edda; color: #155724; }
+        .status-failed { background: #f8d7da; color: #721c24; }
+        .status-incomplete { background: #fff3cd; color: #856404; }
+
+        .loading { text-align: center; padding: 50px; color: #666; }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            margin: 30px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .no-data { text-align: center; padding: 100px 30px; color: #666; }
+        .no-data h2 { color: #f5af19; margin-bottom: 10px; }
+
+        .details-btn {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .details-btn:hover { opacity: 0.9; }
+        .print-btn {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .print-btn:hover { opacity: 0.9; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            width: 100%;
+        }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #666;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+        .close-modal:hover { color: #f12711; }
+
+        .question-item {
+            background: #fff9f0;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #f5af19;
+        }
+        .question-correct { border-left-color: #28a745; background: #d4edda; }
+        .question-incorrect { border-left-color: #dc3545; background: #f8d7da; }
+        .question-partial { border-left-color: #ffc107; background: #fff3cd; }
+        .question-header-modal {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .question-text {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+        .answer-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .answer-box {
+            padding: 12px;
+            border-radius: 5px;
+            border: 2px solid;
+        }
+        .student-answer { border-color: #dc3545; background: #fff5f5; }
+        .student-answer-correct { border-color: #28a745; background: #f0f9f4; }
+        .correct-answer { border-color: #28a745; background: #f0f9f4; }
+        .answer-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .summary-section {
+            background: #fff9f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #f5af19;
+        }
+        .summary-section h3 {
+            color: #f5af19;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .summary-item {
+            background: white;
+            padding: 12px;
+            border-radius: 5px;
+        }
+        .summary-item strong {
+            color: #f5af19;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .score-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .score-correct { background: #28a745; color: white; }
+        .score-incorrect { background: #dc3545; color: white; }
+        .score-partial { background: #ffc107; color: #333; }
+
+        @media print {
+            body { background: white; padding: 0; margin: 0; }
+            .header, .tabs, .controls, .logout-btn, .close-modal,
+            .details-btn, .print-btn, .date-selection-banner,
+            .container, #noDataMessage, #mainContent,
+            .login-container, .quiz-selector {
+                display: none !important;
+            }
+            .modal {
+                display: block !important;
+                position: static !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .modal-content {
+                max-height: none !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+                padding: 20px !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
+            .question-item { page-break-inside: avoid; }
+            .summary-section { page-break-inside: avoid; }
+            .modal-content > div:last-child { display: none !important; }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            @page { margin: 1.5cm; }
+            body, p, div, span, td, th { color: #000 !important; }
+            .question-correct, .question-incorrect, .question-partial {
+                border: 2px solid #333 !important;
+            }
+        }
+        body.printing .modal { display: block !important; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h1>🔐 Secure Access</h1>
+            <p>Dr. Amin Elkhayyat's Dashboard</p>
+            <input type="password" id="passwordInput" placeholder="Enter Password" autocomplete="off">
+            <button onclick="checkPassword()">🔓 Login</button>
+            <p class="error-msg" id="errorMsg">Incorrect password. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="mainDashboard" class="dashboard">
+        <div class="container">
+            <div class="header">
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+                <h1>📚 Dr. Amin Elkhayyat's Students' Results</h1>
+                <p id="quizTitlePlaceholder"></p>
+            </div>
+
+            <!-- Quiz Selector: two lines -->
+            <div class="quiz-selector">
+                <!-- Line 1: dropdown of quiz names -->
+                <div class="quiz-row">
+                    <label style="font-weight:bold; color:#333;">Saved quizzes:</label>
+                    <select id="savedQuizzesSelect" onchange="selectSavedQuiz()" 
+                            style="flex:1; min-width:260px; padding:8px 10px; border:2px solid #ccc; border-radius:5px; font-size:0.95em;">
+                        <option value="">-- Loading from directory... --</option>
+                    </select>
+                </div>
+                <!-- Line 2: URL textbox only -->
+                <div class="quiz-row">
+                    <label style="font-weight:bold; color:#f12711;">Quiz API URL:</label>
+                    <input type="text" id="scriptUrlInput" readonly
+                           placeholder="Select a quiz above to see its URL"
+                           style="flex:1; min-width:260px; padding:8px 10px; border:2px solid #f5af19; border-radius:5px; font-size:0.95em; background:#fff3e0;" />
+                </div>
+                <div style="width:100%; margin-top:5px; font-size:0.9em; color:#666;">
+                    Active quiz: <strong id="activeQuizName">None selected</strong>
+                </div>
+            </div>
+
+            <!-- Date Selection Banner -->
+            <div class="date-selection-banner">
+                <h2>📅 Select Date to Load Results</h2>
+                <div class="date-input-group">
+                    <label>Results from:</label>
+                    <input type="date" id="resultsDate">
+                    <button class="load-btn" onclick="loadResultsFromDate()">🔍 Load Results</button>
+                </div>
+            </div>
+            
+            <!-- No Data Message -->
+            <div id="noDataMessage" class="no-data">
+                <h2>📅 Please select a quiz and date</h2>
+                <p>Choose a quiz from the list above, then select a date to view results</p>
+            </div>
+            
+            <!-- Main Content (hidden initially) -->
+            <div id="mainContent" style="display: none;">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('overview')">📈 Overview</button>
+                    <button class="tab" onclick="switchTab('analytics')">🎯 Question Analytics</button>
+                    <button class="tab" onclick="switchTab('students')">👥 Student Results</button>
+                </div>
+                
+                <!-- Overview Tab -->
+                <div id="overview-tab" class="tab-content active">
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Total Attempts</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="avgScore">0%</h3>
+                            <p>Average Score</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="passRate">0%</h3>
+                            <p>Pass Rate</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="avgTime">0m</h3>
+                            <p>Avg Time Spent</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="highestScore">0%</h3>
+                            <p>Highest Score</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="lowestScore">0%</h3>
+                            <p>Lowest Score</p>
+                        </div>
+                    </div>
+                    <div style="padding: 30px; text-align: center;">
+                        <button class="btn btn-success" onclick="exportStatisticsToExcel()">📊 Download Statistics as Excel</button>
+                    </div>
+                </div>
+                
+                <!-- Analytics Tab -->
+                <div id="analytics-tab" class="tab-content">
+                    <div class="analytics-section">
+                        <h2 class="section-title">
+                            <span>📊 Question Difficulty Analysis</span>
+                            <button class="btn btn-sm btn-success" onclick="exportQuestionAnalyticsToExcel()">📥 Export to Excel</button>
+                        </h2>
+                        <p style="margin-bottom: 20px; color: #666;">Questions ranked by difficulty based on student performance. Lower accuracy = Higher difficulty.</p>
+                        <div id="questionAnalytics"></div>
+                    </div>
+                </div>
+                
+                <!-- Students Tab -->
+                <div id="students-tab" class="tab-content">
+                    <div class="controls">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="🔍 Search by name or email...">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" onclick="loadResultsFromDate()">🔄 Refresh</button>
+                            <button class="btn btn-success" onclick="exportToCSV()">📥 Export CSV</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <div id="loadingMessage" class="loading">Loading results...</div>
+                        <div id="errorMessage" class="error" style="display:none;"></div>
+                        <table id="resultsTable" style="display:none;">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0)">Date & Time ↕</th>
+                                    <th onclick="sortTable(1)">Student Name ↕</th>
+                                    <th onclick="sortTable(2)">Email ↕</th>
+                                    <th onclick="sortTable(3)">Score ↕</th>
+                                    <th onclick="sortTable(4)">Percentage ↕</th>
+                                    <th onclick="sortTable(5)">Status ↕</th>
+                                    <th onclick="sortTable(6)">Time Spent ↕</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="detailsModal" class="modal">
+        <div class="modal-content" id="printableReport">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <div id="modalBody"></div>
+            <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 2px solid #f5af19;">
+                <button class="btn btn-success" onclick="printStudentReport()">🖨️ Print Report</button>
+                <button class="btn btn-info" onclick="exportStudentReportToExcel()">📥 Download as Excel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Directory Web App URL (read-only use: mode=list)
+        const DIRECTORY_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzj7dRzRtyuMUh6GJxpVrlky2EVtxn2U21vc5fS6Z05y4UziZQqC8EkePqHZV_hr0_1Qg/exec';
+
+        const CORRECT_PASSWORD = 'Dr@057336125';
+
+        let SCRIPT_URL = "";
+        let allData = [];
+        let filteredData = [];
+        let questionStats = {};
+        let currentSort = { column: 0, ascending: false };
+        let currentStudentData = null;
+        let quizName = "";
+        let savedQuizzes = []; // { name, url } from Directory
+
+        // Password protection
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            if (input === CORRECT_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainDashboard').style.display = 'block';
+                sessionStorage.setItem('authenticated', 'true');
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('authenticated');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainDashboard').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+        
+        window.onload = function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainDashboard').style.display = 'block';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkPassword();
+                    }
+                });
+            }
+            loadSavedQuizzes(); // Load directory on startup
+        });
+
+        // Load all quizzes from Directory (Quiz Name + URL)
+        async function loadSavedQuizzes() {
+            try {
+                const resp = await fetch(DIRECTORY_WEB_APP_URL + '?mode=list');
+                const json = await resp.json();
+                const quizzes = Array.isArray(json.quizzes) ? json.quizzes : [];
+                savedQuizzes = quizzes;
+                const select = document.getElementById("savedQuizzesSelect");
+                if (!select) return;
+                if (!quizzes.length) {
+                    select.innerHTML = '<option value="">-- No quizzes in directory yet --</option>';
+                    return;
+                }
+                select.innerHTML = '<option value="">-- Select a quiz --</option>';
+                quizzes.forEach((q, i) => {
+                    const opt = document.createElement("option");
+                    opt.value = i;
+                    opt.textContent = q.name; // column A: Quiz Name (Sheet name)
+                    select.appendChild(opt);
+                });
+            } catch (e) {
+                console.error('Error loading saved quizzes from directory:', e);
+                const select = document.getElementById("savedQuizzesSelect");
+                if (select) {
+                    select.innerHTML = '<option value="">-- Error loading directory --</option>';
+                }
+            }
+        }
+
+        // When a quiz is selected, set URL textbox and active quiz
+        function selectSavedQuiz() {
+            const select = document.getElementById("savedQuizzesSelect");
+            const idx = select.value;
+            if (idx === "") return;
+
+            const quiz = savedQuizzes[parseInt(idx, 10)];
+            if (!quiz) return;
+
+            const name = quiz.name;
+            const url = quiz.url;
+
+            document.getElementById("scriptUrlInput").value = url;
+            SCRIPT_URL = url;
+            quizName = name;
+
+            document.getElementById("activeQuizName").textContent = name;
+            document.getElementById("quizTitlePlaceholder").textContent = name;
+
+            allData = [];
+            filteredData = [];
+            document.getElementById("noDataMessage").style.display = "block";
+            document.getElementById("mainContent").style.display = "none";
+        }
+
+        async function loadQuizNameAndInitialData() {
+            try {
+                document.getElementById("activeQuizName").textContent = "Loading...";
+                const resp = await fetch(SCRIPT_URL);
+                const payload = await resp.json();
+
+                if (Array.isArray(payload)) {
+                    allData = payload;
+                    quizName = deriveQuizNameFromData(allData) || quizName || "Quiz Results";
+                } else {
+                    allData = Array.isArray(payload.rows) ? payload.rows : [];
+                    quizName = payload.spreadsheetName || deriveQuizNameFromData(allData) || quizName || "Quiz Results";
+                }
+
+                document.getElementById("activeQuizName").textContent = quizName;
+                document.getElementById("quizTitlePlaceholder").textContent = quizName;
+            } catch (e) {
+                console.error(e);
+                document.getElementById("activeQuizName").textContent = "Error loading quiz";
+                alert("Could not load data from this quiz URL.");
+            }
+        }
+
+        function deriveQuizNameFromData(dataArr) {
+            if (!dataArr || !dataArr.length) return "";
+            const row = dataArr[0];
+            if (row["Quiz Name"]) return String(row["Quiz Name"]);
+            if (row["Test Name"]) return String(row["Test Name"]);
+            if (row["Title"]) return String(row["Title"]);
+            if (row["Sheet Name"]) return String(row["Sheet Name"]);
+            return "";
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function loadResultsFromDate() {
+            if (!SCRIPT_URL) {
+                alert('Please select a quiz from the Saved quizzes list first.');
+                return;
+            }
+            const selectedDate = document.getElementById('resultsDate').value;
+            if (!selectedDate) {
+                alert('Please select a date first');
+                return;
+            }
+
+            try {
+                document.getElementById('loadingMessage').style.display = 'block';
+                document.getElementById('resultsTable').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('noDataMessage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+                if (!allData || !allData.length) {
+                    const resp = await fetch(SCRIPT_URL);
+                    const payload = await resp.json();
+                    if (Array.isArray(payload)) {
+                        allData = payload;
+                    } else {
+                        allData = Array.isArray(payload.rows) ? payload.rows : [];
+                        if (!quizName && payload.spreadsheetName) {
+                            quizName = payload.spreadsheetName;
+                            document.getElementById("activeQuizName").textContent = quizName;
+                            document.getElementById("quizTitlePlaceholder").textContent = quizName;
+                        }
+                    }
+                }
+
+                const filterDate = new Date(selectedDate);
+                filterDate.setHours(0, 0, 0, 0);
+
+                filteredData = (allData || []).filter(row => {
+                    const rowDate = new Date(row['Timestamp'] || row['Date & Time']);
+                    rowDate.setHours(0, 0, 0, 0);
+                    return rowDate >= filterDate;
+                });
+
+                if (filteredData.length === 0) {
+                    document.getElementById('loadingMessage').textContent = 'No results found from this date';
+                    document.getElementById('loadingMessage').style.display = 'block';
+                } else {
+                    displayData(filteredData);
+                    calculateStats(filteredData);
+                    analyzeQuestions(filteredData);
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    document.getElementById('resultsTable').style.display = 'table';
+                }
+            } catch (error) {
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('errorMessage').textContent = 'Error loading data: ' + error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+
+        function analyzeQuestions(data) {
+            questionStats = {};
+            data.forEach(row => {
+                const xmlString = row['Detailed Results'] || row['Details'] || '';
+                if (!xmlString || xmlString === 'N/A') return;
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+                    const questions = xmlDoc.querySelectorAll('questions > *');
+                    questions.forEach((q, index) => {
+                        const qId = 'Q' + (index + 1);
+                        const status = q.getAttribute('status');
+                        const points = parseFloat(q.getAttribute('awardedPoints')) || 0;
+                        const maxPoints = parseFloat(q.getAttribute('maxPoints')) || 1;
+                        if (!questionStats[qId]) {
+                            questionStats[qId] = {
+                                questionNumber: index + 1,
+                                totalAttempts: 0,
+                                correctCount: 0,
+                                partialCount: 0,
+                                incorrectCount: 0,
+                                totalPoints: 0,
+                                maxPossiblePoints: 0,
+                                questionText: ''
+                            };
+                        }
+                        questionStats[qId].totalAttempts++;
+                        questionStats[qId].totalPoints += points;
+                        questionStats[qId].maxPossiblePoints += maxPoints;
+                        if (status === 'correct') questionStats[qId].correctCount++;
+                        else if (status === 'partially') questionStats[qId].partialCount++;
+                        else if (status === 'incorrect') questionStats[qId].incorrectCount++;
+                        if (!questionStats[qId].questionText) {
+                            const direction = q.querySelector('direction text');
+                            const details = q.querySelector('details');
+                            if (direction) {
+                                questionStats[qId].questionText = direction.textContent.trim().substring(0, 100);
+                            } else if (details) {
+                                const firstText = details.querySelector('text');
+                                if (firstText) {
+                                    questionStats[qId].questionText = firstText.textContent.trim().substring(0, 100);
+                                }
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error analyzing questions:', e);
+                }
+            });
+            displayQuestionAnalytics();
+        }
+
+        function displayQuestionAnalytics() {
+            const container = document.getElementById('questionAnalytics');
+            if (!container) return;
+            const questionsArray = Object.keys(questionStats).map(qId => {
+                const q = questionStats[qId];
+                q.accuracy = (q.totalPoints / q.maxPossiblePoints) * 100;
+                q.id = qId;
+                return q;
+            }).sort((a, b) => a.accuracy - b.accuracy);
+            let html = '';
+            questionsArray.forEach(q => {
+                const difficultyClass = q.accuracy < 40 ? 'difficulty-hard' :
+                                       q.accuracy < 70 ? 'difficulty-medium' : 'difficulty-easy';
+                const badgeClass = q.accuracy < 40 ? 'badge-hard' :
+                                  q.accuracy < 70 ? 'badge-medium' : 'badge-easy';
+                const difficultyText = q.accuracy < 40 ? '🔴 Very Hard' :
+                                      q.accuracy < 70 ? '🟡 Medium' : '🟢 Easy';
+                html += `<div class="question-analytics ${difficultyClass}">`;
+                html += `<div class="question-header">`;
+                html += `<div class="question-title">Question ${q.questionNumber}</div>`;
+                html += `<div class="difficulty-badge ${badgeClass}">${difficultyText}</div>`;
+                html += `</div>`;
+                if (q.questionText) {
+                    html += `<div style="margin: 10px 0; color: #666; font-style: italic;">${q.questionText}${q.questionText.length >= 100 ? '...' : ''}</div>`;
+                }
+                html += `<div class="accuracy-bar">`;
+                html += `<div class="accuracy-fill" style="width: ${q.accuracy.toFixed(1)}%">`;
+                html += `${q.accuracy.toFixed(1)}% Accuracy`;
+                html += `</div></div>`;
+                html += `<div class="stats-grid">`;
+                html += `<div class="stat-item"><strong>${q.totalAttempts}</strong><span>Attempts</span></div>`;
+                html += `<div class="stat-item"><strong>${q.correctCount}</strong><span>Correct</span></div>`;
+                html += `<div class="stat-item"><strong>${q.partialCount}</strong><span>Partial</span></div>`;
+                html += `<div class="stat-item"><strong>${q.incorrectCount}</strong><span>Incorrect</span></div>`;
+                html += `<div class="stat-item"><strong>${(q.totalPoints / q.totalAttempts).toFixed(1)}</strong><span>Avg Points</span></div>`;
+                html += `<div class="stat-item"><strong>${((q.correctCount / q.totalAttempts) * 100).toFixed(0)}%</strong><span>Success Rate</span></div>`;
+                html += `</div></div>`;
+            });
+            container.innerHTML = html || '<p>No question data available yet.</p>';
+        }
+
+        function displayData(data) {
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                const timestamp = new Date(row['Timestamp'] || row['Date & Time']);
+                const formattedDate = timestamp.toLocaleString();
+                const status = row['Status'] || 'Incomplete';
+                const statusClass = status.toLowerCase().includes('pass') ? 'status-passed' :
+                                   status.toLowerCase().includes('fail') ? 'status-failed' :
+                                   'status-incomplete';
+                tr.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${row['Student Name'] || row['Name'] || 'N/A'}</td>
+                    <td>${row['Email'] || row['Student Email'] || 'N/A'}</td>
+                    <td>${row['Score'] || '0'}/${row['Max Score'] || row['Maximum Score'] || '0'}</td>
+                    <td>${row['Percentage'] || '0%'}</td>
+                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td>${row['Time Spent'] || 'N/A'}</td>
+                    <td>
+                        <button class="details-btn" onclick="showDetails(${index})">View</button>
+                        <button class="print-btn" onclick="printIndividualReport(${index})">🖨️ Print</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function calculateStats(data) {
+            if (data.length === 0) {
+                document.getElementById('totalStudents').textContent = '0';
+                document.getElementById('avgScore').textContent = '0%';
+                document.getElementById('passRate').textContent = '0%';
+                document.getElementById('avgTime').textContent = '0m';
+                document.getElementById('highestScore').textContent = '0%';
+                document.getElementById('lowestScore').textContent = '0%';
+                return;
+            }
+            document.getElementById('totalStudents').textContent = data.length;
+            let totalPercentage = 0;
+            let passCount = 0;
+            let totalMinutes = 0;
+            let highest = 0;
+            let lowest = 100;
+            data.forEach(row => {
+                const percentage = parseFloat((row['Percentage'] || '0').toString().replace('%', ''));
+                totalPercentage += percentage;
+                if (percentage > highest) highest = percentage;
+                if (percentage < lowest) lowest = percentage;
+                if ((row['Status'] || '').toLowerCase().includes('pass')) {
+                    passCount++;
+                }
+                const timeStr = row['Time Spent'] || '0';
+                const minutes = parseTimeToMinutes(timeStr);
+                totalMinutes += minutes;
+            });
+            document.getElementById('avgScore').textContent = (totalPercentage / data.length).toFixed(1) + '%';
+            document.getElementById('passRate').textContent = ((passCount / data.length) * 100).toFixed(1) + '%';
+            document.getElementById('avgTime').textContent = Math.round(totalMinutes / data.length) + 'm';
+            document.getElementById('highestScore').textContent = highest.toFixed(1) + '%';
+            document.getElementById('lowestScore').textContent = lowest.toFixed(1) + '%';
+        }
+
+        function parseTimeToMinutes(timeStr) {
+            const match = String(timeStr).match(/(\d+)/g);
+            if (!match) return 0;
+            return parseInt(match[0]) || 0;
+        }
+
+        function exportStatisticsToExcel() {
+            const wb = XLSX.utils.book_new();
+            const titleQuiz = quizName || "Quiz";
+            const overviewData = [
+                ["Dr. Amin Elkhayyat's Students' Results"],
+                [titleQuiz],
+                [""],
+                ["Statistic", "Value"],
+                ["Total Attempts", document.getElementById('totalStudents').textContent],
+                ["Average Score", document.getElementById('avgScore').textContent],
+                ["Pass Rate", document.getElementById('passRate').textContent],
+                ["Average Time", document.getElementById('avgTime').textContent],
+                ["Highest Score", document.getElementById('highestScore').textContent],
+                ["Lowest Score", document.getElementById('lowestScore').textContent]
+            ];
+            const ws1 = XLSX.utils.aoa_to_sheet(overviewData);
+            XLSX.utils.book_append_sheet(wb, ws1, 'Overview');
+
+            const questionsArray = Object.keys(questionStats).map(qId => {
+                const q = questionStats[qId];
+                q.accuracy = (q.totalPoints / q.maxPossiblePoints) * 100;
+                return q;
+            }).sort((a, b) => a.accuracy - b.accuracy);
+
+            const qaData = [
+                ["Question Number", "Difficulty", "Accuracy %", "Attempts", "Correct", "Partial", "Incorrect", "Avg Points", "Success Rate"]
+            ];
+            questionsArray.forEach(q => {
+                const difficulty = q.accuracy < 40 ? 'Very Hard' : q.accuracy < 70 ? 'Medium' : 'Easy';
+                qaData.push([
+                    q.questionNumber,
+                    difficulty,
+                    q.accuracy.toFixed(1) + '%',
+                    q.totalAttempts,
+                    q.correctCount,
+                    q.partialCount,
+                    q.incorrectCount,
+                    (q.totalPoints / q.totalAttempts).toFixed(1),
+                    ((q.correctCount / q.totalAttempts) * 100).toFixed(0) + '%'
+                ]);
+            });
+            const ws2 = XLSX.utils.aoa_to_sheet(qaData);
+            XLSX.utils.book_append_sheet(wb, ws2, 'Question Analytics');
+            const safeName = (titleQuiz || 'Statistics').replace(/[^a-z0-9]+/gi, '_');
+            XLSX.writeFile(wb, safeName + '_Statistics_' + new Date().toISOString().split('T')[0] + '.xlsx');
+        }
+
+        function exportQuestionAnalyticsToExcel() {
+            const questionsArray = Object.keys(questionStats).map(qId => {
+                const q = questionStats[qId];
+                q.accuracy = (q.totalPoints / q.maxPossiblePoints) * 100;
+                return q;
+            }).sort((a, b) => a.accuracy - b.accuracy);
+            const titleQuiz = quizName || "Quiz";
+            const data = [
+                ["Question Difficulty Analysis"],
+                ["Dr. Amin Elkhayyat's " + titleQuiz],
+                [""],
+                ["Question", "Difficulty", "Accuracy", "Attempts", "Correct", "Partial", "Incorrect", "Avg Points", "Success Rate", "Question Text"]
+            ];
+            questionsArray.forEach(q => {
+                const difficulty = q.accuracy < 40 ? 'Very Hard' : q.accuracy < 70 ? 'Medium' : 'Easy';
+                data.push([
+                    'Q' + q.questionNumber,
+                    difficulty,
+                    q.accuracy.toFixed(1) + '%',
+                    q.totalAttempts,
+                    q.correctCount,
+                    q.partialCount,
+                    q.incorrectCount,
+                    (q.totalPoints / q.totalAttempts).toFixed(1),
+                    ((q.correctCount / q.totalAttempts) * 100).toFixed(0) + '%',
+                    q.questionText
+                ]);
+            });
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, 'Question Analytics');
+            const safeName = (titleQuiz || 'Question_Analytics').replace(/[^a-z0-9]+/gi, '_');
+            XLSX.writeFile(wb, safeName + '_' + new Date().toISOString().split('T')[0] + '.xlsx');
+        }
+
+        function parseXMLDetails(xmlString) {
+            if (!xmlString || xmlString === 'N/A') {
+                return '<p>No detailed results available</p>';
+            }
+            try {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+                const summary = xmlDoc.querySelector('summary');
+                const settings = xmlDoc.querySelector('quizSettings');
+                const questions = xmlDoc.querySelectorAll('questions > *');
+                let html = '<div class="summary-section">';
+                html += '<h3>📋 Quiz Summary</h3>';
+                html += '<div class="summary-grid">';
+                if (summary && settings) {
+                    html += `<div class="summary-item"><strong>Score</strong>${summary.getAttribute('score')} / ${settings.getAttribute('maxScore')}</div>`;
+                    html += `<div class="summary-item"><strong>Percentage</strong>${summary.getAttribute('percent')}%</div>`;
+                    html += `<div class="summary-item"><strong>Time</strong>${formatSeconds(summary.getAttribute('time'))}</div>`;
+                    html += `<div class="summary-item"><strong>Status</strong>${summary.getAttribute('passed') === 'true' ? 'Passed ✓' : 'Failed ✗'}</div>`;
+                }
+                html += '</div></div>';
+                if (questions.length > 0) {
+                    html += '<h3 style="margin-top: 25px; color: #f5af19; margin-bottom: 15px; font-weight: bold;">📝 Detailed Question Analysis</h3>';
+                    let questionNum = 1;
+                    questions.forEach((q) => {
+                        const status = q.getAttribute('status');
+                        const points = q.getAttribute('awardedPoints');
+                        const maxPoints = q.getAttribute('maxPoints');
+                        const qType = q.tagName.toLowerCase();
+                        let statusClass = 'question-item';
+                        let badgeClass = 'score-partial';
+                        let statusText = status;
+                        if (status === 'correct') {
+                            statusClass = 'question-correct';
+                            badgeClass = 'score-correct';
+                            statusText = '✓ Correct';
+                        } else if (status === 'incorrect') {
+                            statusClass = 'question-incorrect';
+                            badgeClass = 'score-incorrect';
+                            statusText = '✗ Incorrect';
+                        } else if (status === 'partially') {
+                            statusClass = 'question-partial';
+                            badgeClass = 'score-partial';
+                            statusText = '◐ Partially Correct';
+                        }
+                        const direction = q.querySelector('direction text');
+                        const details = q.querySelector('details');
+                        html += `<div class="${statusClass}">`;
+                        html += `<div class="question-header-modal">`;
+                        html += `Question ${questionNum}`;
+                        html += `<span class="score-badge ${badgeClass}">${points}/${maxPoints} pts</span>`;
+                        html += `<span class="score-badge ${badgeClass}">${statusText}</span>`;
+                        html += `</div>`;
+                        if (direction) {
+                            html += `<div class="question-text" style="font-style: italic; color: #666; margin-bottom: 10px;">${direction.textContent}</div>`;
+                        }
+                        if (details) {
+                            if (qType.includes('multiplechoice')) {
+                                html += parseMultipleChoiceDetails(details);
+                            } else if (qType.includes('fillintheblank')) {
+                                html += parseFillInBlankDetails(details);
+                            }
+                        }
+                        html += '</div>';
+                        questionNum++;
+                    });
+                }
+                return html;
+            } catch (e) {
+                console.error('XML Parse Error:', e);
+                return '<pre style="background:#f5f5f5;padding:15px;border-radius:5px;overflow-x:auto;max-height:400px;">' + xmlString + '</pre>';
+            }
+        }
+
+        function parseMultipleChoiceDetails(details) {
+            let html = '';
+            const texts = details.querySelectorAll('text');
+            const blanks = details.querySelectorAll('blank');
+            texts.forEach((text, idx) => {
+                const currentText = text.textContent.trim();
+                if (currentText && idx < blanks.length) {
+                    html += `<div style="margin: 10px 0;"><strong>${currentText}</strong></div>`;
+                    const blank = blanks[idx];
+                    const userAnswerIdx = blank.getAttribute('userAnswerIndex');
+                    const correctAnswerIdx = blank.getAttribute('correctAnswerIndex');
+                    const answers = blank.querySelectorAll('answer');
+                    if (answers.length > 0) {
+                        const studentAnswer = userAnswerIdx ? answers[parseInt(userAnswerIdx)]?.textContent : 'Not answered';
+                        const correctAnswer = correctAnswerIdx ? answers[parseInt(correctAnswerIdx)]?.textContent : 'N/A';
+                        const isCorrect = userAnswerIdx === correctAnswerIdx;
+                        html += '<div class="answer-comparison">';
+                        html += `<div class="answer-box ${isCorrect ? 'student-answer-correct' : 'student-answer'}">`;
+                        html += `<span class="answer-label">${isCorrect ? '✓' : '✗'} Student Answer:</span>`;
+                        html += studentAnswer || 'Not answered';
+                        html += '</div>';
+                        html += '<div class="answer-box correct-answer">';
+                        html += '<span class="answer-label">✓ Correct Answer:</span>';
+                        html += correctAnswer;
+                        html += '</div></div>';
+                    }
+                }
+            });
+            return html;
+        }
+
+        function parseFillInBlankDetails(details) {
+            let html = '';
+            const texts = details.querySelectorAll('text');
+            const blanks = details.querySelectorAll('blank');
+            texts.forEach((text, idx) => {
+                const currentText = text.textContent.trim();
+                if (currentText && idx < blanks.length) {
+                    html += `<div style="margin: 10px 0;"><strong>${currentText}</strong></div>`;
+                    const blank = blanks[idx];
+                    const userAnswer = blank.getAttribute('userAnswer') || 'Not answered';
+                    const isCorrect = blank.getAttribute('correct') === 'true';
+                    const correctAnswers = blank.querySelectorAll('answer');
+                    let correctAnswerText = 'N/A';
+                    if (correctAnswers.length > 0) {
+                        correctAnswerText = Array.from(correctAnswers).map(a => a.textContent).join(' OR ');
+                    }
+                    html += '<div class="answer-comparison">';
+                    html += `<div class="answer-box ${isCorrect ? 'student-answer-correct' : 'student-answer'}">`;
+                    html += `<span class="answer-label">${isCorrect ? '✓' : '✗'} Student Answer:</span>`;
+                    html += userAnswer;
+                    html += '</div>';
+                    html += '<div class="answer-box correct-answer">';
+                    html += '<span class="answer-label">✓ Correct Answer:</span>';
+                    html += correctAnswerText;
+                    html += '</div></div>';
+                }
+            });
+            return html;
+        }
+
+        function formatSeconds(seconds) {
+            const s = parseInt(seconds, 10) || 0;
+            const mins = Math.floor(s / 60);
+            const secs = s % 60;
+            return `${mins}m ${secs}s`;
+        }
+
+        function sortTable(column) {
+            const ascending = currentSort.column === column ? !currentSort.ascending : true;
+            currentSort = { column, ascending };
+            const headers = ['Timestamp', 'Student Name', 'Email', 'Score', 'Percentage', 'Status', 'Time Spent'];
+            const key = headers[column];
+            filteredData.sort((a, b) => {
+                let aVal = a[key] || '';
+                let bVal = b[key] || '';
+                if (column === 0) {
+                    aVal = new Date(aVal);
+                    bVal = new Date(bVal);
+                } else if (column === 3 || column === 4) {
+                    aVal = parseFloat(String(aVal).replace('%', ''));
+                    bVal = parseFloat(String(bVal).replace('%', ''));
+                }
+                if (aVal < bVal) return ascending ? -1 : 1;
+                if (aVal > bVal) return ascending ? 1 : -1;
+                return 0;
+            });
+            displayData(filteredData);
+        }
+
+        function showDetails(index) {
+            const row = filteredData[index] || allData[index];
+            currentStudentData = row;
+            const modal = document.getElementById('detailsModal');
+            const modalBody = document.getElementById('modalBody');
+            const detailedXML = row['Detailed Results'] || row['Details'] || '';
+            const parsedDetails = parseXMLDetails(detailedXML);
+            modalBody.innerHTML = `
+                <h2 style="color: #f5af19; margin-bottom: 20px; font-weight: bold;">${row['Student Name'] || 'Student'}</h2>
+                <div style="background: #fff9f0; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 2px solid #f5af19;">
+                    <p><strong>Quiz:</strong> ${quizName || 'Quiz'}</p>
+                    <p><strong>Email:</strong> ${row['Email'] || row['Student Email'] || 'N/A'}</p>
+                    <p><strong>Date:</strong> ${new Date(row['Timestamp'] || row['Date & Time']).toLocaleString()}</p>
+                    <p><strong>Score:</strong> ${row['Score']}/${row['Max Score'] || row['Maximum Score']} (${row['Percentage']})</p>
+                    <p><strong>Status:</strong> ${row['Status'] || 'N/A'}</p>
+                    <p><strong>Time Spent:</strong> ${row['Time Spent'] || 'N/A'}</p>
+                </div>
+                ${parsedDetails}
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function printIndividualReport(index) {
+            const row = filteredData[index] || allData[index];
+            currentStudentData = row;
+            showDetails(index);
+            setTimeout(() => {
+                printStudentReport();
+            }, 500);
+        }
+
+        function printStudentReport() {
+            try {
+                const reportContent = document.getElementById('modalBody').innerHTML;
+                const studentData = currentStudentData;
+                if (!studentData) {
+                    alert('Please open a student report first');
+                    return;
+                }
+                const titleQuiz = quizName || 'Quiz';
+                const printHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${studentData['Student Name']} - ${titleQuiz} Report</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 30px;
+            background: white;
+            color: #000;
+        }
+        h2 {
+            color: #f5af19;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        h3 {
+            color: #f5af19;
+            margin: 20px 0 15px 0;
+            font-weight: bold;
+        }
+        .summary-section {
+            background: #fff9f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #f5af19;
+            page-break-inside: avoid;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .summary-item {
+            background: white;
+            padding: 12px;
+            border-radius: 5px;
+        }
+        .summary-item strong {
+            color: #f5af19;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .question-item, .question-correct, .question-incorrect, .question-partial {
+            background: #fff9f0;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #f5af19;
+            page-break-inside: avoid;
+        }
+        .question-correct {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .question-incorrect {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .question-partial {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        .question-header-modal {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .question-text {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+            font-style: italic;
+        }
+        .answer-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .answer-box {
+            padding: 12px;
+            border-radius: 5px;
+            border: 2px solid;
+        }
+        .student-answer {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+        .student-answer-correct {
+            border-color: #28a745;
+            background: #f0f9f4;
+        }
+        .correct-answer {
+            border-color: #28a745;
+            background: #f0f9f4;
+        }
+        .answer-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .score-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .score-correct {
+            background: #28a745;
+            color: white;
+        }
+        .score-incorrect {
+            background: #dc3545;
+            color: white;
+        }
+        .score-partial {
+            background: #ffc107;
+            color: #333;
+        }
+        .header-info {
+            background: #fff9f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 2px solid #f5af19;
+        }
+        .header-info p { margin: 5px 0; }
+        @media print {
+            body { padding: 20px; }
+            .question-item, .question-correct, .question-incorrect, .question-partial,
+            .summary-section { page-break-inside: avoid; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+    <h2>${studentData['Student Name'] || 'Student'} - ${titleQuiz} Report</h2>
+    <div class="header-info">
+        <p><strong>Quiz:</strong> ${titleQuiz}</p>
+        <p><strong>Email:</strong> ${studentData['Email'] || studentData['Student Email'] || 'N/A'}</p>
+        <p><strong>Date:</strong> ${new Date(studentData['Timestamp'] || studentData['Date & Time']).toLocaleString()}</p>
+        <p><strong>Score:</strong> ${studentData['Score']}/${studentData['Max Score'] || studentData['Maximum Score']} (${studentData['Percentage']})</p>
+        <p><strong>Status:</strong> ${studentData['Status'] || 'N/A'}</p>
+        <p><strong>Time Spent:</strong> ${studentData['Time Spent'] || 'N/A'}</p>
+    </div>
+    ${reportContent}
+    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #f5af19;">
+        <p style="color: #666; font-size: 0.9em;">Dr. Amin Elkhayyat's Students' Results Dashboard</p>
+        <p style="color: #666; font-size: 0.85em; margin-top: 5px;">Generated on ${new Date().toLocaleString()}</p>
+    </div>
+</body>
+</html>`;
+                const printWindow = window.open('', '_blank');
+            if (printWindow) {
+                printWindow.document.write(printHTML);
+                printWindow.document.close();
+                printWindow.onload = function() {
+                    setTimeout(function() {
+                        printWindow.focus();
+                        printWindow.print();
+                    }, 500);
+                };
+            } else {
+                alert('Pop-up blocked! Please allow pop-ups for this site and try again.');
+            }
+            } catch (error) {
+                console.error('Print error:', error);
+                alert('Error opening print window: ' + error.message);
+            }
+        }
+
+        function exportStudentReportToExcel() {
+            if (!currentStudentData) return;
+            const wb = XLSX.utils.book_new();
+            const titleQuiz = quizName || "Quiz";
+            const data = [
+                ["Dr. Amin Elkhayyat's Students' Results"],
+                [titleQuiz + " - Individual Report"],
+                [""],
+                ["Student Name", currentStudentData['Student Name'] || 'N/A'],
+                ["Email", currentStudentData['Email'] || currentStudentData['Student Email'] || 'N/A'],
+                ["Quiz", titleQuiz],
+                ["Date", new Date(currentStudentData['Timestamp'] || currentStudentData['Date & Time']).toLocaleString()],
+                ["Score", currentStudentData['Score'] + '/' + (currentStudentData['Max Score'] || currentStudentData['Maximum Score'] || '')],
+                ["Percentage", currentStudentData['Percentage']],
+                ["Status", currentStudentData['Status']],
+                ["Time Spent", currentStudentData['Time Spent']]
+            ];
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, 'Student Report');
+            const fileName = `${(currentStudentData['Student Name'] || 'Student').replace(/[^a-z0-9]+/gi, '_')}_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+            currentStudentData = null;
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const dataToUse = filteredData.length ? filteredData : allData;
+            const filtered = dataToUse.filter(row => {
+                const name = (row['Student Name'] || '').toLowerCase();
+                const email = (row['Email'] || row['Student Email'] || '').toLowerCase();
+                return name.includes(searchTerm) || email.includes(searchTerm);
+            });
+            displayData(filtered);
+        });
+
+        function exportToCSV() {
+            const dataToUse = filteredData.length ? filteredData : allData;
+            if (!dataToUse.length) {
+                alert('No data to export');
+                return;
+            }
+            const headers = Object.keys(dataToUse[0]);
+            const csv = [
+                headers.join(','),
+                ...dataToUse.map(row => headers.map(h => JSON.stringify(row[h] || '')).join(','))
+            ].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safeName = (quizName || 'quiz-results').replace(/[^a-z0-9]+/gi, '_');
+            a.download = safeName + '-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+        }
+    </script>
+</body>
+</html>
